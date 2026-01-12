@@ -41,6 +41,17 @@ app.get('/api/notifications', (req, res) => {
 });
 
 /**
+ * DELETE /api/notifications/delete-all
+ * Deletes all notifications
+ */
+app.delete('/api/notifications/delete-all', (_req, res) => {
+  const deleted = notifications.length;
+  notifications.splice(0, notifications.length);
+  return res.json({ ok: true, deleted });
+});
+
+
+/**
  * PATCH /api/notifications/:id/read
  * Body: { read: boolean }
  */
@@ -73,6 +84,51 @@ app.delete('/api/notifications/:id', (req, res) => {
 app.get('/api/notifications/unread/count', (_, res) => {
   const count = notifications.reduce((acc, n) => acc + (n.read ? 0 : 1), 0);
   res.json({ count });
+});
+
+/**
+ * PATCH /api/notifications/read
+ * Body: { ids: string[]; read: boolean }
+ */
+
+app.patch('/api/notifications/read', (req, res) => {
+  const { ids, read } = req.body as { ids: string[]; read: boolean };
+
+  if (!Array.isArray(ids) || typeof read !== 'boolean') {
+    return res.status(400).json({ message: 'Invalid payload' });
+  }
+
+  let updated = 0;
+  for (const id of ids) {
+    const idx = notifications.findIndex(n => n.id === id);
+    if (idx !== -1) {
+      notifications[idx] = { ...notifications[idx]!, read };
+      updated++;
+    }
+  }
+
+  return res.json({ ok: true, updated });
+});
+
+
+/**
+ * DELETE /api/notifications
+ * Body: { ids: string[] }
+ */
+
+app.delete('/api/notifications', (req, res) => {
+  const { ids } = req.body as { ids: string[] };
+
+  if (!Array.isArray(ids)) {
+    return res.status(400).json({ message: 'Invalid payload' });
+  }
+
+  const before = notifications.length;
+  const remaining = notifications.filter(n => !ids.includes(n.id));
+  notifications.splice(0, notifications.length, ...remaining);
+  const deleted = before - notifications.length;
+
+  return res.json({ ok: true, deleted });
 });
 
 
