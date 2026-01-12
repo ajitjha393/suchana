@@ -1,4 +1,10 @@
 ﻿<mat-card class="item" [class.unread]="!notification.read">
+    <!-- Added this for selecting each notification  -->
+  <mat-checkbox
+    [checked]="selected"
+    (change)="selectedChange.emit($event.checked)"
+    aria-label="Select notification">
+  </mat-checkbox>
   <mat-card-content class="row">
     <div class="left">
       <mat-icon 

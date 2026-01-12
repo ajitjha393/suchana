@@ -30,6 +30,43 @@ export class NotificationsPageComponent implements OnInit {
     this.store.setPage(e.pageIndex + 1, e.pageSize);
   }
 
+  bulkMarkRead(read: boolean): void {
+    this.store.bulkMarkRead(read);
+  }
+
+  bulkDeleteAll(): void {
+    this.store.deleteAll();
+  }
+
+  bulkDeleteSelected(): void {
+    this.store.bulkDeleteSelected();
+  }
+
+  selectedCount(): number {
+    return this.store.selectedCount();
+  }
+
+  selectAllOnPage(select: boolean): void {
+    this.store.selectAllOnPage(select);
+  }
+
+  isSelected(id: string): boolean {
+    return this.store.isSelected(id);
+  }
+
+  toggleSelected(id: string, selected: boolean): void {
+    this.store.toggleSelected(id, selected);
+  }
+
+  isAllSelectedOnPage(): boolean {
+    return this.store.isAllSelectedOnPage();
+  }
+
+  isAnySelectedOnPage(): boolean {
+    return this.store.isAnySelectedOnPage();
+  }
+  
+
   retry(): void {
     this.store.retry();
   }

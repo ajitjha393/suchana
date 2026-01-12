@@ -18,6 +18,7 @@ interface State {
 
   loading: boolean;
   error: string | null;
+  selectedIds: Record<string, boolean>;
 }
 
 const initialState: State = {
@@ -33,6 +34,7 @@ const initialState: State = {
 
   loading: false,
   error: null,
+  selectedIds: {},
 };
 
 @Injectable({ providedIn: 'root' })
@@ -167,4 +169,114 @@ export class NotificationStore {
   private patch(p: Partial<State>): void {
     this.state$.next({ ...this.state$.value, ...p });
   }
+
+  toggleSelected(id: string, checked: boolean): void {
+    const next = { ...this.state$.value.selectedIds };
+    if (checked) next[id] = true;
+    else delete next[id];
+    this.patch({ selectedIds: next });
+  }
+
+  clearSelection(): void {
+    this.patch({ selectedIds: {} });
+  }
+
+  selectAllOnPage(checked: boolean): void {
+    const next = { ...this.state$.value.selectedIds };
+    for (const n of this.state$.value.items) {
+      if (checked) next[n.id] = true;
+      else delete next[n.id];
+    }
+    this.patch({ selectedIds: next });
+  }
+
+  selectedCount(): number {
+    return Object.keys(this.state$.value.selectedIds).length;
+  }
+
+  selectedIdsList(): string[] {
+    return Object.keys(this.state$.value.selectedIds);
+  }
+
+  isSelected(id: string): boolean {
+    return !!this.state$.value.selectedIds[id];
+  }
+
+  bulkMarkRead(read: boolean): void {
+  const ids = this.selectedIdsList();
+  if (ids.length === 0) return;
+
+  // update on current page
+  const nextItems = this.state$.value.items.map(n =>
+    ids.includes(n.id) ? { ...n, read } : n
+  );
+  this.patch({ items: nextItems });
+
+  this.api.bulkSetRead(ids, read).pipe(
+    tap(() => {
+      this.refreshUnreadCount();
+      this.clearSelection();
+    }),
+    catchError(() => {
+      this.snack.open('Bulk update failed. Please try again.', 'Dismiss', { duration: 3000 });
+      // reload to restore correctness
+      return this.load();
+    })
+  ).subscribe();
+}
+
+  bulkDeleteSelected(): void {
+    const ids = this.selectedIdsList();
+    if (ids.length === 0) return;
+
+    const prevItems = this.state$.value.items;
+    const nextItems = prevItems.filter(n => !ids.includes(n.id));
+
+    // optimistic remove (page-only)
+    this.patch({ items: nextItems });
+
+    this.api.bulkDelete(ids).pipe(
+      tap(() => {
+        this.snack.open('Selected notifications deleted', 'Dismiss', { duration: 2000 });
+        this.refreshUnreadCount();
+        this.clearSelection();
+        // reload to get correct totals + fill page
+        this.load().subscribe();
+      }),
+      catchError(() => {
+        this.patch({ items: prevItems });
+        this.snack.open('Bulk delete failed. Please try again.', 'Dismiss', { duration: 3000 });
+        return of(null);
+      })
+    ).subscribe();
+  }
+
+
+  deleteAll(): void {
+      this.api.deleteAll().pipe(
+        tap(() => {
+          this.snack.open('All notifications deleted', 'Dismiss', { duration: 2000 });
+          this.clearSelection();
+          this.patch({ items: [], total: 0, page: 1 });
+          this.refreshUnreadCount();
+        }),
+        catchError(() => {
+          this.snack.open('Delete all failed. Please try again.', 'Dismiss', { duration: 3000 });
+          return of(null);
+        })
+      ).subscribe();
+    }
+
+
+  isAllSelectedOnPage(): boolean {
+    const items = this.state$.value.items;
+    if (items.length === 0) return false;
+
+    return items.every(n => this.state$.value.selectedIds[n.id]);
+  }
+
+  isAnySelectedOnPage(): boolean {
+    return this.state$.value.items.some(n => this.state$.value.selectedIds[n.id]);
+  }
+
 }

@@ -1,4 +1,4 @@
-﻿import { Component, Input } from '@angular/core';
+﻿import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { Notification } from '../../types/notification';
 import { NotificationStore } from '../../store/notification.store';
 
@@ -9,6 +9,9 @@ import { NotificationStore } from '../../store/notification.store';
 })
 export class NotificationItemComponent {
   @Input() notification!: Notification;
+  @Input() selected = false;
+  @Output() selectedChange = new EventEmitter<boolean>();
+
 
   constructor(private store: NotificationStore) {}
 

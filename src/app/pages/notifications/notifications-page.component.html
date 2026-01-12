@@ -1,5 +1,5 @@
 ﻿<mat-toolbar color="primary" role="banner">
-  <span>Suchana | Notifications App</span>
+  <span>Suchana</span>
   <span class="spacer"></span>
 
   <div class="unread" aria-live="polite">
@@ -56,12 +56,49 @@
         </div>
       </div>
 
+      <div class="bulkBar" [class.hasSelection]="isAnySelectedOnPage()" *ngIf="!vm.loading && !vm.error" [ngStyle]="{ display: vm.items.length === 0 ? 'none' : 'inline-flex' }">
+      <mat-checkbox
+        (change)="selectAllOnPage($event.checked)"
+        [checked]="isAllSelectedOnPage()"
+        [indeterminate]="isAnySelectedOnPage() && !isAllSelectedOnPage()"
+        aria-label="Select all notifications on this page">
+        Select page
+      </mat-checkbox>
+
+      <!-- <span class="bulkCount">
+        Selected: {{ selectedCount() }}
+      </span> -->
+
+      <span class="spacer"></span>
+
+      <button mat-stroked-button (click)="bulkMarkRead(true)" [disabled]="selectedCount() === 0">
+        Mark read
+      </button>
+
+      <button mat-stroked-button (click)="bulkMarkRead(false)" [disabled]="selectedCount() === 0">
+        Mark unread
+      </button>
+
+      <button mat-stroked-button color="warn" (click)="bulkDeleteSelected()" [disabled]="selectedCount() === 0">
+        Delete selected
+      </button>
+
+      <!-- Optional -->
+      <button mat-button color="warn" (click)="bulkDeleteAll()">
+        Delete all
+      </button>
+    </div>
+
+
       <!-- List -->
       <div *ngIf="!vm.loading && !vm.error && vm.items.length > 0" class="listScroll" aria-label="Notifications list">
         <div class="list">
             <app-notification-item
                 *ngFor="let n of vm.items"
-                [notification]="n">
+                [notification]="n"
+                [selected]="isSelected(n.id)"
+                (selectedChange)="toggleSelected(n.id, $event)"
+                >
             </app-notification-item>
         </div>
         <!-- Pagination -->

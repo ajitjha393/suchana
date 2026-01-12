@@ -35,4 +35,26 @@ export class NotificationApiService {
   unreadCount(): Observable<{ count: number }> {
     return this.http.get<{ count: number }>(`${this.baseUrl}/notifications/unread/count`);
   }
+
+  bulkSetRead(ids: string[], read: boolean) {
+    return this.http.patch<{ ok: true; updated: number }>(
+      `${this.baseUrl}/notifications/read`,
+      { ids, read }
+    );
+  }
+
+  bulkDelete(ids: string[]) {
+    return this.http.request<{ ok: true; deleted: number }>(
+      'delete',
+      `${this.baseUrl}/notifications`,
+      { body: { ids } }
+    );
+  }
+
+  deleteAll() {
+    return this.http.delete<{ ok: true; deleted: number }>(
+      `${this.baseUrl}/notifications/delete-all`
+    );
+  }
+
 }

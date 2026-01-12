@@ -21,6 +21,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { NotificationsPageComponent } from './pages/notifications/notifications-page.component';
 import { NotificationItemComponent } from './components/notification-item/notification-item.component';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 
 
 
@@ -46,7 +47,8 @@ import { NotificationItemComponent } from './components/notification-item/notifi
     MatListModule,
     MatProgressSpinnerModule,
     MatPaginatorModule,
-    MatCardModule
+    MatCardModule,
+    MatCheckboxModule
   ],
   providers: [],
   bootstrap: [AppComponent]

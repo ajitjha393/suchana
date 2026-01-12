@@ -1,8 +1,5 @@
 ﻿
-:host {
-  display: block;
-}
-
+:host { display: block; width: 100%; }
 
 .chips {
   margin-top: 5px;
@@ -11,6 +8,7 @@
 /* Card shell */
 .item {
   border-radius: 12px;
+  width: 100%;
   background: #ffffff;
   border: 1px solid rgba(0, 0, 0, 0.10);
 
@@ -77,6 +75,7 @@
 .title {
   font-weight: 600;
   line-height: 1.25;
+  max-width: 70%;
 
   /* prevent clipping */
   word-break: break-word;
@@ -155,7 +154,7 @@
 
 
 /* Responsive: stack actions below content */
-@media (max-width: 720px) {
+@media (max-width: 600px) {
   .row {
     grid-template-columns: 40px minmax(0, 1fr);
   }
@@ -165,5 +164,15 @@
     justify-content: flex-start;
     padding-left: 52px;
     margin-top: 6px;
+  }
+
+  .chips {
+    width: 100%;
+    flex: 0 0 100%;
+    margin-top: 6px;
+  }
+
+  .title {
+    max-width: 100%;
   }
 }
