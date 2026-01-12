@@ -40,7 +40,7 @@ export class NotificationStore {
   private readonly state$ = new BehaviorSubject<State>(initialState);
   private readonly snack = inject(MatSnackBar);
 
-  // Public selectors
+  // Public selectors vm -> ViewModel provides steam of data that Ui template needs
   readonly vm$ = this.state$.asObservable();
 
   // Internal search stream for debounce

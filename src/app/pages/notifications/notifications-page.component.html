@@ -1,0 +1,83 @@
+﻿<mat-toolbar color="primary" role="banner">
+  <span>Suchana | Notifications App</span>
+  <span class="spacer"></span>
+
+  <div class="unread" aria-live="polite">
+    <mat-icon aria-hidden="true">mark_email_unread</mat-icon>
+    <span class="unread-text">Unread:</span>
+    <span class="unread-count">{{ (vm$ | async)?.unreadCount ?? 0 }}</span>
+  </div>
+</mat-toolbar>
+
+<main class="container" role="main">
+  <section class="controls" aria-label="Notification controls">
+    <mat-form-field appearance="outline" class="control">
+      <mat-label>Type</mat-label>
+      <mat-select [value]="(vm$ | async)?.type" (selectionChange)="onTypeChange($event.value)">
+        <mat-option *ngFor="let t of types" [value]="t">{{ t }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="control grow">
+      <mat-label>Search</mat-label>
+      <input
+        matInput
+        type="text"
+        [value]="(vm$ | async)?.search"
+        (input)="onSearchChange(($any($event.target)).value)"
+        placeholder="Search title/message"
+        aria-label="Search notifications"
+      />
+      <button mat-icon-button matSuffix aria-label="Clear search" (click)="onSearchChange('')">
+        <mat-icon>close</mat-icon>
+      </button>
+    </mat-form-field>
+  </section>
+
+  <section class="content">
+    <ng-container *ngIf="vm$ | async as vm">
+      <!-- Error state -->
+      <div *ngIf="vm.error" class="state error" role="alert">
+        <mat-icon aria-hidden="true">error</mat-icon>
+        <div class="state-text">{{ vm.error }}</div>
+        <button mat-raised-button color="primary" (click)="retry()">Retry</button>
+      </div>
+
+      <!-- Loading state -->
+      <div *ngIf="vm.loading" class="state loading" aria-label="Loading notifications">
+        <mat-progress-spinner mode="indeterminate"></mat-progress-spinner>
+      </div>
+
+      <!-- Empty state -->
+      <div *ngIf="!vm.loading && !vm.error && vm.total === 0" class="state empty">
+        <mat-icon aria-hidden="true">inbox</mat-icon>
+        <div class="state-text">
+          No notifications found.
+        </div>
+      </div>
+
+      <!-- List -->
+      <div *ngIf="!vm.loading && !vm.error && vm.items.length > 0" class="listScroll" aria-label="Notifications list">
+        <div class="list">
+            <app-notification-item
+                *ngFor="let n of vm.items"
+                [notification]="n">
+            </app-notification-item>
+        </div>
+        <!-- Pagination -->
+        <mat-paginator
+        class="stickyPager"
+          *ngIf="!vm.loading && !vm.error"
+          [length]="vm.total"
+          [pageIndex]="vm.page - 1"
+          [pageSize]="vm.pageSize"
+          [pageSizeOptions]="[5, 10, 20, 50]"
+          (page)="onPage($event)"
+          aria-label="Notifications pagination">
+        </mat-paginator>
+      </div>
+
+
+    </ng-container>
+  </section>
+</main>

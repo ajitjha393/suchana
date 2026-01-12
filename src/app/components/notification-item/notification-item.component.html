@@ -1,0 +1,49 @@
+﻿<mat-card class="item" [class.unread]="!notification.read">
+  <mat-card-content class="row">
+    <div class="left">
+      <mat-icon 
+      class="typeIcon" 
+      [ngClass]="notification.type"
+      aria-hidden="true">{{ typeIcon() }}</mat-icon>
+    </div>
+
+    <div class="main">
+      <div class="top">
+        <div class="title">{{ notification.title }}</div>
+
+        <div class="chips" aria-label="Type and category">
+          <mat-chip-list>
+            <mat-chip>{{ notification.type }}</mat-chip>
+            <mat-chip *ngIf="notification.category">{{ notification.category }}</mat-chip>
+          </mat-chip-list>
+        </div>
+      </div>
+
+      <div class="message">{{ notification.message }}</div>
+
+      <div class="meta">
+        <span [title]="notification.timestamp">{{ notification.timestamp | date:'medium' }}</span>
+        <span class="dot" aria-hidden="true">•</span>
+        <span>{{ notification.read ? 'Read' : 'Unread' }}</span>
+      </div>
+    </div>
+
+    <div class="actions">
+      <button
+        mat-stroked-button
+        color="primary"
+        (click)="toggleRead()"
+        [attr.aria-label]="notification.read ? 'Mark as unread' : 'Mark as read'">
+        {{ notification.read ? 'Mark unread' : 'Mark read' }}
+      </button>
+
+      <button
+        mat-icon-button
+        color="warn"
+        (click)="delete()"
+        aria-label="Delete notification">
+        <mat-icon>delete</mat-icon>
+      </button>
+    </div>
+  </mat-card-content>
+</mat-card>

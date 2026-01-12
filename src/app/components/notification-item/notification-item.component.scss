@@ -1,0 +1,169 @@
+﻿
+:host {
+  display: block;
+}
+
+
+.chips {
+  margin-top: 5px;
+}
+
+/* Card shell */
+.item {
+  border-radius: 12px;
+  background: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.10);
+
+  transition:
+    box-shadow 0.2s ease,
+    transform 0.15s ease,
+    border-color 0.2s ease;
+
+  /* subtle separation */
+  box-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.06),
+    0 1px 4px rgba(0, 0, 0, 0.04);
+}
+
+/* Hover / focus polish */
+.item:hover {
+  transform: translateY(-1px);
+  box-shadow:
+    0 6px 16px rgba(0, 0, 0, 0.12),
+    0 2px 6px rgba(0, 0, 0, 0.08);
+}
+
+/* Unread emphasis */
+.item.unread {
+  border-left: 4px solid #3f51b5; /* Material indigo */
+  background: #f9faff;
+}
+
+/* Content layout */
+.row {
+  display: grid;
+  grid-template-columns: 40px minmax(0, 1fr) auto;
+  gap: 12px;
+  align-items: flex-start;
+
+  padding: 14px 16px;
+}
+
+/* Icon column */
+.left {
+  display: flex;
+  justify-content: center;
+  padding-top: 2px;
+}
+
+.typeIcon {
+  font-size: 22px;
+  opacity: 0.9;
+}
+
+/* Main content */
+.main {
+  min-width: 0;
+}
+
+.top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.title {
+  font-weight: 600;
+  line-height: 1.25;
+
+  /* prevent clipping */
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
+
+.message {
+  margin-top: 6px;
+  line-height: 1.4;
+  opacity: 0.9;
+
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
+
+/* Meta info */
+.meta {
+  margin-top: 6px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  font-size: 12.5px;
+  opacity: 0.7;
+  flex-wrap: wrap;
+}
+
+/* Actions column */
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  white-space: nowrap;
+}
+
+/* Make action buttons compact */
+.actions button[mat-stroked-button] {
+  min-width: 0;
+  padding: 0 10px;
+}
+
+/* Chips wrapping */
+:host ::ng-deep .mat-chip-list-wrapper {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+/* Keyboard focus visibility */
+.item:focus-within {
+  outline: 2px solid rgba(63, 81, 181, 0.35);
+  outline-offset: 2px;
+}
+
+
+// // I have added styles for different notification types
+.typeIcon {
+  font-size: 22px;
+}
+
+.typeIcon.error {
+  color: #d32f2f; // Material red 700
+}
+
+.typeIcon.warning {
+  color: #ed6c02; // orange
+}
+
+.typeIcon.info {
+  color: #0288d1; // blue
+}
+
+.typeIcon.success {
+  color: #2e7d32; // green
+}
+
+
+/* Responsive: stack actions below content */
+@media (max-width: 720px) {
+  .row {
+    grid-template-columns: 40px minmax(0, 1fr);
+  }
+
+  .actions {
+    grid-column: 1 / -1;
+    justify-content: flex-start;
+    padding-left: 52px;
+    margin-top: 6px;
+  }
+}
