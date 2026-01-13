@@ -4,6 +4,7 @@ import { catchError, debounceTime, distinctUntilChanged, finalize, map, switchMa
 import { Notification, NotificationType } from '../types/notification';
 import { NotificationApiService } from '../core/api/notification-api.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { NotificationStreamService } from '../core/services/notifcation-stream.service';
 
 interface State {
   items: Notification[];
@@ -41,6 +42,7 @@ const initialState: State = {
 export class NotificationStore {
   private readonly state$ = new BehaviorSubject<State>(initialState);
   private readonly snack = inject(MatSnackBar);
+  private readonly stream = inject(NotificationStreamService);
 
   // Public selectors vm -> ViewModel provides steam of data that Ui template needs
   readonly vm$ = this.state$.asObservable();
@@ -278,5 +280,25 @@ export class NotificationStore {
   isAnySelectedOnPage(): boolean {
     return this.state$.value.items.some(n => this.state$.value.selectedIds[n.id]);
   }
+
+  startRealtime(): void {
+  
+  const streamUrl = this.api.getStreamUrl();
+  this.stream.connect(streamUrl).subscribe({
+    next: (evt) => {
+      // Handle different event types as needed in future
+      if (evt.type === 'notification_created') {
+        // refresh list + count (correct with pagination/filter/search)
+        this.refreshUnreadCount();
+        this.load().subscribe();
+        this.snack.open('New notification received', 'Dismiss', { duration: 2000 });
+      }
+    },
+    error: () => {
+      console.log('Notification stream disconnected');
+      this.snack.open('Real-time notification connection lost.', 'Dismiss', { duration: 3000 });
+    },
+  });
+}
 
 }

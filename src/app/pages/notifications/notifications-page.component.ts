@@ -16,6 +16,7 @@ export class NotificationsPageComponent implements OnInit {
 
   ngOnInit(): void {
     this.store.init();
+    this.store.startRealtime();
   }
 
   onTypeChange(type: NotificationType | 'all'): void {

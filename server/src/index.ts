@@ -2,10 +2,32 @@
 import cors from 'cors';
 import { notifications } from './data';
 import { NotificationType } from './types';
+import type { Request, Response } from 'express';
+import { randomUUID } from 'crypto';
+
+
 
 const app = express();
 app.use(cors());
 app.use(express.json());
+
+const sseClients = new Set<Response>();
+
+app.get('/api/notifications/stream', (req: Request, res: Response) => {
+  res.setHeader('Content-Type', 'text/event-stream');
+  res.setHeader('Cache-Control', 'no-cache');
+  res.setHeader('Connection', 'keep-alive');
+  res.setHeader('Access-Control-Allow-Origin', '*');
+
+  // initial "connected" ping
+  res.write(`event: connected\ndata: {}\n\n`);
+
+  sseClients.add(res);
+
+  req.on('close', () => {
+    sseClients.delete(res);
+  });
+});
 
 function contains(source: string, word: string): boolean {
   return source.toLowerCase().includes(word.toLowerCase());
@@ -137,3 +159,26 @@ app.delete('/api/notifications', (req, res) => {
 app.listen(4000, () => {
     console.log('Mock API running on http://localhost:4000');
 });
+
+
+function sseBroadcast(event: string, data: unknown) {
+  const payload = `event: ${event}\ndata: ${JSON.stringify(data)}\n\n`;
+  for (const client of sseClients) {
+    client.write(payload);
+  }
+}
+
+setInterval(() => {
+  const n = {
+    id: randomUUID(),
+    title: 'New feature available',
+    message: 'You can now enable real-time notifications.',
+    type: 'info',
+    timestamp: new Date().toISOString(),
+    read: false,
+    category: 'product',
+  };
+
+  notifications.unshift(n as any);
+  sseBroadcast('notification_created', n);
+}, 15000);

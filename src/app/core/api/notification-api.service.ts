@@ -57,4 +57,8 @@ export class NotificationApiService {
     );
   }
 
+  getStreamUrl(): string {
+    return `${this.baseUrl}/notifications/stream`;
+  }
+
 }
