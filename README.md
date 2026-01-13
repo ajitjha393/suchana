@@ -161,3 +161,42 @@ npm run start
 ```
 Suchana App will be running at localhost:4000
 ```
+
+
+<hr>
+<br>
+
+## 🏗️ Architecture Decisions
+
+### 💻 The Tech Stack & Logic
+I prioritized a clean, lightweight, and scalable architecture by making a few key trade-offs:
+
+- **Angular 14 + Material**:  Chosen for speed and accessibility. It allowed me to focus on logic rather than reinventing the wheel on UI components.
+
+- **RxJS ViewModel (vm$)**: I skipped the overhead of NgRx. Instead, I used a custom RxJS store pattern. This keeps the state predictable and easy to debug without the boilerplate of a massive library.
+
+- **Server-Sent Events (SSE)**: Since notifications are one-way (Server → Client), I opted for SSE over WebSockets. It’s lighter, more reliable for this use case, and much easier to maintain.
+
+- **Real-World API Design**: Even though the backend is a mock Express server, I implemented server-side pagination and filtering to simulate how a production-grade app actually handles data at scale.
+
+
+
+### 🧠 Challenges & "Aha!" Moments
+- **State vs. UI**: Handling bulk actions and filters simultaneously can get messy. Centralizing everything into a single ViewModel (vm$) made the UI logic much easier to reason about.
+
+- **CSS Flexbox Hurdles**: Getting a fixed-height scroll to work perfectly across different screen sizes required some deep-diving into flexbox edge cases—specifically managing min-height: 0 to prevent layout breaks.
+
+- **Ordering Routes**: I hit some early conflicts with Express routes (like /all vs /:id). I fixed this by refining the endpoint hierarchy and avoiding ambiguous patterns.
+
+
+
+### 🚀 Scaling & Next Steps
+ If this were heading to a production environment tomorrow, here’s how I’d level it up:
+
+- **Better Data Persistence**: Swap the in-memory mock for a real database like PostgreSQL or MongoDB.
+
+- **Testing**: Build out a robust suite of unit and integration tests for the store and API.
+
+- **Enhanced Real-Time**: As the user base grows, I’d move to a dedicated event system and potentially upgrade to WebSockets if we need two-way communication.
+
+- **UX Polish**: Add confirmation dialogs for bulk deletes and persist user preferences (like "dark mode" or "items per page") across sessions.
