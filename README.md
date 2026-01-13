@@ -96,6 +96,9 @@ Real-time functionality is implemented in a separate branch:
 feat-real-time-notifs
 ```
 
+<img width="1887" height="973" alt="image" src="https://github.com/user-attachments/assets/66172eec-8066-4bf2-af1e-3aa7ba1a474b" />
+
+
 ### Why Server-Sent Events (SSE)?
 
 Notifications are one-way (server → client) only
