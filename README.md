@@ -4,6 +4,16 @@ This project implements a Notifications Dashboard as per the functional requirem
 
 <hr>
 
+### Quick Demonstration: 
+
+
+
+https://github.com/user-attachments/assets/c34a1519-13fa-41b1-89f1-650817007b01
+
+<br>
+
+<hr>
+
 ### ✨ Features Implemented
 
 #### Core Requirements
