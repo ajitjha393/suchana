@@ -3,13 +3,14 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Notification } from '../../types/notification';
 import { PagedResponse, GetNotificationsQuery  } from '../../types/paged-response';
+import { environment } from '../../../environments/environment';
 
 
 @Injectable({ 
     providedIn: 'root'
 })
 export class NotificationApiService {
-  private readonly baseUrl = 'http://localhost:4000/api';
+  private readonly baseUrl = environment.apiBaseUrl;
 
   constructor(private http: HttpClient) {}
 

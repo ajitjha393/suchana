@@ -166,7 +166,86 @@ Suchana App will be running at localhost:4000
 ```
 
 
+<br>
+
+
+## 🛠️ Production Readiness & Engineering Practices
+
+
+To make this project closer to a real-world, production-ready application, the following engineering practices and architectural improvements have been implemented.
+
+### 🔧 Environment-based Configuration
 <hr>
+
+  - All API URLs are environment-driven using Angular environment.ts / environment.prod.ts.
+  - In development, APIs are accessed via /api and routed to the backend using an Angular proxy, avoiding CORS issues.
+  - This ensures clean separation between development, staging, and production environments without code changes.
+
+
+<br>
+
+### 🌐 Centralized HTTP Handling
+  <hr>
+
+  Introduced Angular HTTP Interceptors to:
+
+  - Standardize API error handling
+  - Log failed requests with context (URL, method, status, duration)
+  - Prepare the app for retries, auth headers, and request correlation
+
+  This keeps API services clean and avoids duplicated error-handling logic across components.
+
+<br>
+
+### 🧾 Global Error Handling
+  <hr>
+
+  Added a Global ErrorHandler to catch:
+  - Runtime errors
+  - Template errors
+  - Unhandled exceptions
+  - Ensures unexpected failures are captured centrally instead of failing silently.
+
+This is a foundation for integrating external monitoring tools (e.g. Sentry, Datadog).
+
+<br>
+
+### 📊 Structured Logging Service
+<hr>
+
+- Implemented a dedicated LoggerService with support for:
+
+  - Log levels (info, warn, error)
+  - Contextual metadata (feature, component, action)
+  - Correlation between UI actions and API failures
+
+- Logs can be traced back to:
+  - Which component/store triggered the action
+  - What failed (API / logic / runtime)
+
+- Designed to be easily extended to send logs to a backend or third-party observability platform.
+
+
+<br>
+
+### 🏷️ Versioning & Changelog Management
+
+<hr>
+
+- Adopted Semantic Versioning using `standard-version`.
+
+- Commit history follows Conventional Commits, enabling:
+
+  - Automatic version bumps
+  - Auto-generated `CHANGELOG.md`
+  - Clear traceability of features, fixes, and breaking changes
+
+- Each release includes:
+  - Versioned Git tags
+  - Structured changelog entries derived from commit messages
+
+- This makes releases predictable, auditable, and automation-friendly.
+
 <br>
 
 ## 🏗️ Architecture Decisions

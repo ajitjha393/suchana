@@ -5,6 +5,7 @@ import { Notification, NotificationType } from '../types/notification';
 import { NotificationApiService } from '../core/api/notification-api.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { NotificationStreamService } from '../core/services/notifcation-stream.service';
+import { LoggerService } from '../core/logging/logger.service';
 
 interface State {
   items: Notification[];
@@ -43,6 +44,7 @@ export class NotificationStore {
   private readonly state$ = new BehaviorSubject<State>(initialState);
   private readonly snack = inject(MatSnackBar);
   private readonly stream = inject(NotificationStreamService);
+  private readonly logger = inject(LoggerService);
 
   // Public selectors vm -> ViewModel provides steam of data that Ui template needs
   readonly vm$ = this.state$.asObservable();
@@ -124,6 +126,13 @@ export class NotificationStore {
         // rollback so that consistency is maintained
         this.patch({ items: prevItems, total: this.state$.value.total + 1 });
         this.patchUnreadFromList();
+        // Example Logger usage
+        this.logger.error(
+          'Failed to delete notification',
+          err,
+          { feature: 'notifications', component: 'NotificationStore', action: 'delete' },
+          { id: n.id }
+        );
         this.snack.open('Failed to delete notification. Please try again.', 'Dismiss', { duration: 3000 });
         return of(null);
       })

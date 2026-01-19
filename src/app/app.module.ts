@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { ErrorHandler, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
@@ -7,7 +7,7 @@ import { AppComponent } from './app.component';
 
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 
-import { HttpClientModule } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -22,6 +22,8 @@ import { MatPaginatorModule } from '@angular/material/paginator';
 import { NotificationsPageComponent } from './pages/notifications/notifications-page.component';
 import { NotificationItemComponent } from './components/notification-item/notification-item.component';
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import { GlobalErrorHandler } from './core/logging/global-error.handler';
+import { HttpLoggingInterceptor } from './core/interceptors/http-logging.interceptor';
 
 
 
@@ -50,7 +52,10 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
     MatCardModule,
     MatCheckboxModule
   ],
-  providers: [],
+  providers: [
+    { provide: HTTP_INTERCEPTORS, useClass: HttpLoggingInterceptor, multi: true },
+    { provide: ErrorHandler, useClass: GlobalErrorHandler },
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
