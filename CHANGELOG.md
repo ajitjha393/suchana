@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.0.0](https://github.com/ajitjha393/suchana/compare/v0.0.1...v1.0.0) (2026-01-19)
+
+
+### Features
+
+* **logging:** add production-grade error and exception tracking ([a3acdd9](https://github.com/ajitjha393/suchana/commit/a3acdd90d0448f74db92e0505558d7e751d57dbf))
+
 ### 0.0.1 (2026-01-19)
 
 
